@@ -14,7 +14,7 @@ scrape_configs:
       - targets:
           - localhost
         labels:
-          job: go-far-app
+          job: belajar-go-app
           __path__: /var/log/app/*.log
     pipeline_stages:
       - json:

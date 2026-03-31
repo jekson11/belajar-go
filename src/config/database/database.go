@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"go-far/src/preference"
+	"belajar-go/src/preference"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/rs/zerolog"

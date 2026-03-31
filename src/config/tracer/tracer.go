@@ -52,7 +52,7 @@ func InitTracer(log zerolog.Logger, opt TracerOptions) Tracer {
 	// Create resource with service information
 	res, err := resource.New(ctx,
 		resource.WithAttributes(
-			semconv.ServiceName("go-far-app"),
+			semconv.ServiceName("belajar-go-app"),
 			semconv.ServiceVersion("1.0.0"),
 		),
 	)

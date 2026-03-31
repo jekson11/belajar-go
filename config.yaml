@@ -88,4 +88,4 @@ middleware:
     limit: 500 # max 500 clients
 
 gin:
-  app_name: go-far-app
+  app_name: belajar-go-app

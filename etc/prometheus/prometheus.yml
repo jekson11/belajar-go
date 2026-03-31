@@ -6,6 +6,6 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
   
-  - job_name: 'go-far-app'
+  - job_name: 'belajar-go-app'
     static_configs:
       - targets: ['localhost:8181']  # Your app port

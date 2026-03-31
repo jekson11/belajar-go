@@ -6,13 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"go-far/src/config/middleware"
-
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog"
-	swaggerfiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
-	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
 var (
@@ -50,18 +45,4 @@ func InitHttpServer(logger zerolog.Logger, opt ServerOptions, engine *gin.Engine
 	})
 
 	return httpServerInst
-}
-
-// InitHttpGin initializes the Gin engine
-func InitHttpGin(log zerolog.Logger, mw middleware.Middleware, opt GinOptions) *gin.Engine {
-	gin.SetMode(gin.ReleaseMode)
-
-	router := gin.New()
-	router.Use(otelgin.Middleware(opt.AppName))
-	router.Use(mw.Handler())
-	router.Use(mw.CORS())
-
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler, ginSwagger.DefaultModelsExpandDepth(-1)))
-
-	return router
 }

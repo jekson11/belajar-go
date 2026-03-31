@@ -4,31 +4,23 @@ import (
 	"fmt"
 	"os"
 
-	"go-far/src/config/auth"
-	"go-far/src/config/database"
-	"go-far/src/config/logger"
-	"go-far/src/config/middleware"
-	"go-far/src/config/query"
-	"go-far/src/config/redis"
-	cfgscheduler "go-far/src/config/scheduler"
-	"go-far/src/config/server"
-	"go-far/src/config/tracer"
+	"belajar-go/src/config/database"
+	"belajar-go/src/config/logger"
+	"belajar-go/src/config/query"
+	"belajar-go/src/config/server"
+	"belajar-go/src/config/tracer"
 
 	"github.com/goccy/go-yaml"
 )
 
 type Config struct {
-	Server     server.ServerOptions          `yaml:"server"`
-	Logger     logger.LoggerOptions          `yaml:"logger"`
-	Postgres   database.DatabaseOptions      `yaml:"postgres"`
-	MySQL      database.DatabaseOptions      `yaml:"mysql"`
-	Redis      redis.RedisOptions            `yaml:"redis"`
-	Queries    query.QueriesOptions          `yaml:"queries"`
-	Auth       auth.AuthOptions              `yaml:"auth"`
-	Middleware middleware.MiddlewareOptions  `yaml:"middleware"`
-	Gin        server.GinOptions             `yaml:"gin"`
-	Scheduler  cfgscheduler.SchedulerOptions `yaml:"scheduler"`
-	Tracer     tracer.TracerOptions          `yaml:"tracer"`
+	Server   server.ServerOptions     `yaml:"server"`
+	Logger   logger.LoggerOptions     `yaml:"logger"`
+	Postgres database.DatabaseOptions `yaml:"postgres"`
+	MySQL    database.DatabaseOptions `yaml:"mysql"`
+	Queries  query.QueriesOptions     `yaml:"queries"`
+	Gin      server.GinOptions        `yaml:"gin"`
+	Tracer   tracer.TracerOptions     `yaml:"tracer"`
 }
 
 func InitConfig() (*Config, error) {
@@ -77,14 +69,6 @@ func overrideWithEnv(cfg *Config) {
 
 	if val := os.Getenv("DB_NAME"); val != "" {
 		cfg.Postgres.DBName = val
-	}
-
-	if val := os.Getenv("REDIS_ADDRESS"); val != "" {
-		cfg.Redis.Address = val
-	}
-
-	if val := os.Getenv("REDIS_PASSWORD"); val != "" {
-		cfg.Redis.Password = val
 	}
 
 	if val := os.Getenv("TRACER_ENDPOINT"); val != "" {
