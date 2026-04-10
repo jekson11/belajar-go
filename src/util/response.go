@@ -7,10 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ResponseOk(c *gin.Context, message string, totalData int, data any) {
+func ResponseOk(c *gin.Context, totalData int, data any) {
 	c.JSON(http.StatusOK, dto.Response{
-		Status:    "success",
-		Message:   message,
 		TotalData: totalData,
 		Data:      data,
 	})

@@ -13,5 +13,5 @@ func (e *rest) ListUsers(c *gin.Context) {
 		util.ResponseError(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-	util.ResponseOk(c, "Data Fetch successfully", len(users), users)
+	util.ResponseOk(c, len(users), users)
 }
