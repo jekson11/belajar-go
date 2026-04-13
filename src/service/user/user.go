@@ -2,11 +2,12 @@ package user
 
 import (
 	"belajar-go/src/domain"
+	"belajar-go/src/dto"
 	"belajar-go/src/repository/user"
 )
 
 type UserServiceInterface interface {
-	ListAllDataUser() ([]domain.User, error)
+	ListAllDataUser(filter dto.UserFilter) ([]domain.User, error)
 }
 
 type userService struct {

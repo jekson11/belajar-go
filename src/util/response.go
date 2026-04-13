@@ -1,8 +1,9 @@
 package util
 
 import (
-	"belajar-go/src/dto"
 	"net/http"
+
+	"belajar-go/src/dto"
 
 	"github.com/gin-gonic/gin"
 )

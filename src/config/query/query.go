@@ -2,11 +2,11 @@ package query
 
 import (
 	"bufio"
-	"bytes"
 	"fmt"
-	"html/template"
 	"os"
 	"strings"
+
+	"github.com/VauntDev/tqla"
 )
 
 type LoadQuery struct {
@@ -70,19 +70,28 @@ func (ql *LoadQuery) ExecuteTemplate(name string, data any) (string, []any, erro
 	if !ok {
 		return "", nil, fmt.Errorf("query %s not found", name)
 	}
-
-	tmpl, err := template.New(name).Parse(queryTemplate)
+	t, err := tqla.New(tqla.WithPlaceHolder(tqla.Dollar))
 	if err != nil {
 		return "", nil, err
 	}
 
-	var buf bytes.Buffer
-	if err := tmpl.Execute(&buf, data); err != nil {
+	query, args, err := t.Compile(queryTemplate, data)
+	if err != nil {
 		return "", nil, err
 	}
 
-	query := buf.String()
-	return query, nil, nil
+	//tmpl, err := template.New(name).Parse(queryTemplate)
+	//if err != nil {
+	//	return "", nil, err
+	//}
+
+	//var buf bytes.Buffer
+	//if err := tmpl.Execute(&buf, data); err != nil {
+	//	return "", nil, err
+	//}
+	//
+	//query := buf.String()
+	return query, args, nil
 }
 
 func (ql *LoadQuery) Get(name string) (string, bool) {

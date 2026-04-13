@@ -1,7 +1,16 @@
 package user
 
-import "belajar-go/src/domain"
+import (
+	"strings"
 
-func (s *userService) ListAllDataUser() ([]domain.User, error) {
-	return s.userRepository.FindAll()
+	"belajar-go/src/domain"
+	"belajar-go/src/dto"
+)
+
+func (s *userService) ListAllDataUser(filter dto.UserFilter) ([]domain.User, error) {
+	filter.Page = (filter.Page - 1) * filter.Limit
+	if filter.Name != "" {
+		filter.Name = "%" + strings.ToLower(filter.Name) + "%"
+	}
+	return s.userRepository.FindAll(filter)
 }

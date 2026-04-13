@@ -12,6 +12,7 @@ require (
 )
 
 require (
+	github.com/VauntDev/tqla v0.0.3 // indirect
 	github.com/bytedance/gopkg v0.1.4 // indirect
 	github.com/cenkalti/backoff/v5 v5.0.3 // indirect
 	github.com/go-logr/logr v1.4.3 // indirect
