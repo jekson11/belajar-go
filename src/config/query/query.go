@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 
+	"belajar-go/src/dto"
+
 	"github.com/VauntDev/tqla"
 )
 
@@ -65,36 +67,62 @@ func (ql *LoadQuery) load() error {
 	return scanner.Err()
 }
 
-func (ql *LoadQuery) ExecuteTemplate(name string, data any) (string, []any, error) {
+func (ql *LoadQuery) ExecuteTemplate(name string, filter dto.UserFilter) (string, []any, error) {
 	queryTemplate, ok := ql.Get(name)
+
 	if !ok {
 		return "", nil, fmt.Errorf("query %s not found", name)
 	}
+
+	orderClause := fmt.Sprintf(
+		"ORDER BY %s %s",
+		safeSort(filter.SortBy),
+		safeDir(filter.SortDir),
+	)
+
+	finalQueryTemplate := strings.Replace(
+		queryTemplate,
+		"__ORDER_BY__",
+		orderClause,
+		1,
+	)
 	t, err := tqla.New(tqla.WithPlaceHolder(tqla.Dollar))
 	if err != nil {
 		return "", nil, err
 	}
 
-	query, args, err := t.Compile(queryTemplate, data)
+	query, args, err := t.Compile(finalQueryTemplate, filter)
+
 	if err != nil {
 		return "", nil, err
 	}
 
-	//tmpl, err := template.New(name).Parse(queryTemplate)
-	//if err != nil {
-	//	return "", nil, err
-	//}
-
-	//var buf bytes.Buffer
-	//if err := tmpl.Execute(&buf, data); err != nil {
-	//	return "", nil, err
-	//}
-	//
-	//query := buf.String()
 	return query, args, nil
 }
 
 func (ql *LoadQuery) Get(name string) (string, bool) {
 	query, ok := ql.queries[name]
 	return query, ok
+}
+
+func safeSort(sortBy string) string {
+	switch sortBy {
+	case "id":
+		return "user_id"
+	case "name":
+		return "name"
+	case "email":
+		return "email"
+	case "username":
+		return "username"
+	default:
+		return "username"
+	}
+}
+
+func safeDir(dir string) string {
+	if strings.ToUpper(dir) == "DESC" {
+		return "DESC"
+	}
+	return "ASC"
 }
