@@ -31,6 +31,7 @@ func InitRestHandler(svc *service.Service, port string) {
 
 func (e *rest) Serve() {
 	e.gin.GET("/users", e.ListUsers)
+	e.gin.POST("/user", e.CreateUser)
 
 	if err := e.gin.Run(":" + e.port); err != nil {
 		panic(err)

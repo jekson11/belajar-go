@@ -1,8 +1,8 @@
 package dto
 
 type Response struct {
-	Data      any `json:"data" extensions:"x-order=0"`
-	TotalData int `json:"totalData" extensions:"x-order=1"`
+	Data      any  `json:"data"`
+	TotalData *int `json:"totalData,omitempty"`
 }
 
 type ResponseError struct {
