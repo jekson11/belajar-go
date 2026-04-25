@@ -86,23 +86,32 @@ func (ql *LoadQuery) ExecuteTemplate(name string, filter dto.UserFilter) (string
 		orderClause,
 		1,
 	)
-	t, err := tqla.New(tqla.WithPlaceHolder(tqla.Dollar))
+
+	tqlaCompile, args, err := CompileTqla(finalQueryTemplate, filter)
 	if err != nil {
 		return "", nil, err
 	}
 
-	query, args, err := t.Compile(finalQueryTemplate, filter)
-
-	if err != nil {
-		return "", nil, err
-	}
-
-	return query, args, nil
+	return tqlaCompile, args, nil
 }
 
 func (ql *LoadQuery) Get(name string) (string, bool) {
 	query, ok := ql.queries[name]
 	return query, ok
+}
+
+func CompileTqla(queryTemplate string, data any) (string, []any, error) {
+	t, err := tqla.New(tqla.WithPlaceHolder(tqla.Dollar))
+	if err != nil {
+		return "", nil, fmt.Errorf("failed to create tqla: %w", err)
+	}
+
+	query, args, err := t.Compile(queryTemplate, data)
+	if err != nil {
+		return "", nil, fmt.Errorf("failed to compile query: %w", err)
+	}
+
+	return query, args, nil
 }
 
 func safeSort(sortBy string) string {

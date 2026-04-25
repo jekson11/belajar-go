@@ -12,7 +12,7 @@ import (
 
 type UserRepositoryInterface interface {
 	FindAll(filter dto.UserFilter) ([]domain.User, int, error)
-	Create(ctx context.Context, user []domain.UserCreateDomain) ([]domain.UserCreateDomain, error)
+	Create(ctx context.Context, user []*domain.UserCreateDomain) ([]*domain.UserCreateDomain, error)
 }
 
 type userRepository struct {

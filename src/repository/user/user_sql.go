@@ -5,17 +5,16 @@ import (
 	"database/sql"
 	"fmt"
 
+	"belajar-go/src/config/query"
 	"belajar-go/src/domain"
 	"belajar-go/src/dto"
-
-	"github.com/VauntDev/tqla"
 )
 
 func (d *userRepository) findAllUserFromSql(filter dto.UserFilter) ([]domain.User, int, error) {
 	var results []domain.User
 	var totalData int
 
-	query, args, err := d.queryLoader.ExecuteTemplate("FindAllUserData", filter)
+	template, args, err := d.queryLoader.ExecuteTemplate("FindAllUserData", filter)
 
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to load query template: %w", err)
@@ -26,7 +25,7 @@ func (d *userRepository) findAllUserFromSql(filter dto.UserFilter) ([]domain.Use
 		return nil, 0, fmt.Errorf("failed to load count template: %w", err)
 	}
 
-	if err = d.sql0.Select(&results, query, args...); err != nil {
+	if err = d.sql0.Select(&results, template, args...); err != nil {
 		return nil, 0, fmt.Errorf("failed to execute query: %w", err)
 	}
 
@@ -37,7 +36,7 @@ func (d *userRepository) findAllUserFromSql(filter dto.UserFilter) ([]domain.Use
 	return results, totalData, nil
 }
 
-func (d *userRepository) createUserFromSql(ctx context.Context, users []domain.UserCreateDomain) ([]domain.UserCreateDomain, error) {
+func (d *userRepository) createUserFromSql(ctx context.Context, users []*domain.UserCreateDomain) ([]*domain.UserCreateDomain, error) {
 	begin, err := d.sql0.BeginTxx(ctx, &sql.TxOptions{
 		Isolation: sql.LevelDefault,
 	})
@@ -45,31 +44,31 @@ func (d *userRepository) createUserFromSql(ctx context.Context, users []domain.U
 		return nil, fmt.Errorf("failed to begin transaction: %w", err)
 	}
 
-	t, err := tqla.New(tqla.WithPlaceHolder(tqla.Dollar))
-	if err != nil {
-		return nil, fmt.Errorf("failed to create tqla: %w", err)
-	}
+	defer func() {
+		if err != nil {
+			err := begin.Rollback()
+			if err != nil {
+				return
+			}
+			return
+		}
+		err = begin.Commit()
+	}()
 
 	queryStr, ok := d.queryLoader.Get("CreateUser")
 	if !ok {
 		return nil, fmt.Errorf("query CreateUser not found")
 	}
 
-	query, args, err := t.Compile(queryStr, users)
+	tqlaCompile, args, err := query.CompileTqla(queryStr, users)
 	if err != nil {
 		return nil, fmt.Errorf("failed to compile query: %w", err)
 	}
 
-	_, err = begin.ExecContext(ctx, query, args...)
+	_, err = begin.ExecContext(ctx, tqlaCompile, args...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to execute query: %w", err)
 	}
 
-	if err = begin.Commit(); err != nil {
-		if rollbackErr := begin.Rollback(); rollbackErr != nil {
-			return nil, fmt.Errorf("rollback after commit: %w", rollbackErr)
-		}
-		return nil, fmt.Errorf("failed to commit transaction: %w", err)
-	}
 	return users, nil
 }

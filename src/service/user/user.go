@@ -10,7 +10,7 @@ import (
 
 type UserServiceInterface interface {
 	ListAllDataUser(filter dto.UserFilter) ([]domain.User, int, error)
-	CreateDataUser(ctx context.Context, user []domain.UserCreateDomain) ([]domain.UserCreateDomain, error)
+	CreateDataUser(ctx context.Context, user []*domain.UserCreateDomain) ([]*domain.UserCreateDomain, error)
 }
 
 type userService struct {

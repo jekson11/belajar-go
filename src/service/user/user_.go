@@ -16,7 +16,7 @@ func (s *userService) ListAllDataUser(filter dto.UserFilter) ([]domain.User, int
 	return s.userRepository.FindAll(filter)
 }
 
-func (s *userService) CreateDataUser(ctx context.Context, request []domain.UserCreateDomain) ([]domain.UserCreateDomain, error) {
+func (s *userService) CreateDataUser(ctx context.Context, request []*domain.UserCreateDomain) ([]*domain.UserCreateDomain, error) {
 	if _, err := s.userRepository.Create(ctx, request); err != nil {
 		return nil, err
 	}

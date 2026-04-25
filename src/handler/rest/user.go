@@ -30,7 +30,7 @@ func (e *rest) ListUsers(c *gin.Context) {
 
 func (e *rest) CreateUser(c *gin.Context) {
 	ctx := c.Request.Context()
-	var request []domain.UserCreateDomain
+	var request []*domain.UserCreateDomain
 
 	if err := c.ShouldBindJSON(&request); err != nil {
 		util.ResponseError(c, http.StatusBadRequest, "invalid request body couse : "+err.Error())

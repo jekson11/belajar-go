@@ -15,6 +15,6 @@ func (d *userRepository) FindAll(filter dto.UserFilter) ([]domain.User, int, err
 	return result, total, nil
 }
 
-func (d *userRepository) Create(ctx context.Context, user []domain.UserCreateDomain) ([]domain.UserCreateDomain, error) {
+func (d *userRepository) Create(ctx context.Context, user []*domain.UserCreateDomain) ([]*domain.UserCreateDomain, error) {
 	return d.createUserFromSql(ctx, user)
 }
