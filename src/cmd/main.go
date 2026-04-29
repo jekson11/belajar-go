@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/jmoiron/sqlx"
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
+
 	"belajar-go/src/config/database"
 	"belajar-go/src/config/query"
 	"belajar-go/src/handler/rest"
 	"belajar-go/src/repository"
 	"belajar-go/src/service"
-
-	"github.com/jmoiron/sqlx"
-	"github.com/joho/godotenv"
-	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -26,7 +26,12 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to connect to database: %v", err)
 	}
-	defer db.Close()
+
+	defer func(db *sqlx.DB) {
+		if cerr := db.Close(); cerr != nil {
+			log.Printf("failed to close database connection: %v", cerr)
+		}
+	}(db)
 
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(5)
@@ -35,7 +40,8 @@ func main() {
 
 	ql, err := query.NewLoadQuery("etc/query/user.sql")
 	if err != nil {
-		log.Fatalf("failed to load query: %v", err)
+		log.Printf("failed to load query: %v", err)
+		return
 	}
 
 	userRepo := repository.InitRepository(db, ql)

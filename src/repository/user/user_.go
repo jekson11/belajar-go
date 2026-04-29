@@ -1,13 +1,13 @@
 package user
 
 import (
+	"context"
+
 	"belajar-go/src/domain"
 	"belajar-go/src/dto"
-
-	"context"
 )
 
-func (d *userRepository) FindAll(filter dto.UserFilter) ([]domain.User, int, error) {
+func (d *userRepository) FindAll(filter *dto.UserFilter) ([]domain.User, int, error) {
 	result, total, err := d.findAllUserFromSql(filter)
 	if err != nil {
 		return nil, 0, err

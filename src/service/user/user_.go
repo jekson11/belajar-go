@@ -8,7 +8,7 @@ import (
 	"belajar-go/src/dto"
 )
 
-func (s *userService) ListAllDataUser(filter dto.UserFilter) ([]domain.User, int, error) {
+func (s *userService) ListAllDataUser(filter *dto.UserFilter) ([]domain.User, int, error) {
 	filter.Page = (filter.Page - 1) * filter.Limit
 	if filter.Name != "" {
 		filter.Name = "%" + strings.ToLower(filter.Name) + "%"

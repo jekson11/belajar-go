@@ -3,12 +3,13 @@ package query
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
-	"belajar-go/src/dto"
-
 	"github.com/VauntDev/tqla"
+
+	"belajar-go/src/dto"
 )
 
 type LoadQuery struct {
@@ -35,7 +36,11 @@ func (ql *LoadQuery) load() error {
 	if err != nil {
 		return fmt.Errorf("failed to open query file: %w", err)
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		if err := file.Close(); err != nil {
+			log.Printf("failed to close file: %v", err)
+		}
+	}(file)
 
 	var (
 		currentName string
@@ -67,7 +72,7 @@ func (ql *LoadQuery) load() error {
 	return scanner.Err()
 }
 
-func (ql *LoadQuery) ExecuteTemplate(name string, filter dto.UserFilter) (string, []any, error) {
+func (ql *LoadQuery) ExecuteTemplate(name string, filter *dto.UserFilter) (string, []any, error) {
 	queryTemplate, ok := ql.Get(name)
 
 	if !ok {

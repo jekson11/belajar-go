@@ -3,11 +3,11 @@ package rest
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
+
 	"belajar-go/src/domain"
 	"belajar-go/src/dto"
 	"belajar-go/src/util"
-
-	"github.com/gin-gonic/gin"
 )
 
 func (e *rest) ListUsers(c *gin.Context) {
@@ -18,7 +18,7 @@ func (e *rest) ListUsers(c *gin.Context) {
 		return
 	}
 
-	users, total, err := e.svc.User.ListAllDataUser(filter)
+	users, total, err := e.svc.User.ListAllDataUser(&filter)
 
 	if err != nil {
 		util.ResponseError(c, http.StatusInternalServerError, "internal server error cause : "+err.Error())

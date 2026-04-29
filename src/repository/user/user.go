@@ -1,17 +1,17 @@
 package user
 
 import (
-	"belajar-go/src/config/query"
-	"belajar-go/src/domain"
-	"belajar-go/src/dto"
-
 	"context"
 
 	"github.com/jmoiron/sqlx"
+
+	"belajar-go/src/config/query"
+	"belajar-go/src/domain"
+	"belajar-go/src/dto"
 )
 
 type UserRepositoryInterface interface {
-	FindAll(filter dto.UserFilter) ([]domain.User, int, error)
+	FindAll(filter *dto.UserFilter) ([]domain.User, int, error)
 	Create(ctx context.Context, user []*domain.UserCreateDomain) ([]*domain.UserCreateDomain, error)
 }
 

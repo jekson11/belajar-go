@@ -3,9 +3,9 @@ package util
 import (
 	"net/http"
 
-	"belajar-go/src/dto"
-
 	"github.com/gin-gonic/gin"
+
+	"belajar-go/src/dto"
 )
 
 func ResponseOk(c *gin.Context, totalData *int, data any) {

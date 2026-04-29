@@ -3,20 +3,19 @@ package rest
 import (
 	"sync"
 
-	"belajar-go/src/service"
-
 	"github.com/gin-gonic/gin"
+
+	"belajar-go/src/service"
 )
 
-// this singleton pattern to make sure InitRestHandlerr is called only during execution
-var onceRestHandler = &sync.Once{}
-
 type rest struct {
-	//router HHPT
 	gin  *gin.Engine
 	svc  *service.Service
 	port string
 }
+
+// this singleton pattern to make sure InitRestHandlerr is called only during execution
+var onceRestHandler = &sync.Once{}
 
 func InitRestHandler(svc *service.Service, port string) {
 	onceRestHandler.Do(func() {

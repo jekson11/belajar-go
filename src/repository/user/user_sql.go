@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 
 	"belajar-go/src/config/query"
@@ -10,7 +11,7 @@ import (
 	"belajar-go/src/dto"
 )
 
-func (d *userRepository) findAllUserFromSql(filter dto.UserFilter) ([]domain.User, int, error) {
+func (d *userRepository) findAllUserFromSql(filter *dto.UserFilter) ([]domain.User, int, error) {
 	var results []domain.User
 	var totalData int
 
@@ -46,8 +47,8 @@ func (d *userRepository) createUserFromSql(ctx context.Context, users []*domain.
 
 	defer func() {
 		if err != nil {
-			err := begin.Rollback()
-			if err != nil {
+			cerr := begin.Rollback()
+			if cerr != nil {
 				return
 			}
 			return
@@ -57,7 +58,7 @@ func (d *userRepository) createUserFromSql(ctx context.Context, users []*domain.
 
 	queryStr, ok := d.queryLoader.Get("CreateUser")
 	if !ok {
-		return nil, fmt.Errorf("query CreateUser not found")
+		return nil, errors.New("query CreateUser not found")
 	}
 
 	tqlaCompile, args, err := query.CompileTqla(queryStr, users)
